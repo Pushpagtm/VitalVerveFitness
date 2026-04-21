@@ -1,0 +1,23 @@
+services:
+  vitalverve-dev:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_API_PROXY_TARGET=http://auth-api:4000
+    depends_on:
+      - auth-api
+
+  auth-api:
+    build:
+      context: .
+      target: dev
+    command: npm run server
+    ports:
+      - "4000:4000"

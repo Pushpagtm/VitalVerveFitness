@@ -5,6 +5,7 @@ import Link from "./Link";
 import { SelectedPage } from "@/shared/types";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import ActionButton from "@/shared/ActionButton";
+import { Link as RouterLink } from "react-router-dom";
 
 type Props = {
   isTopOfPage: boolean;
@@ -54,7 +55,12 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   />
                 </div>
                 <div className={`${flexBetween} gap-8`}>
-                  <p>Sign In</p>
+                  <RouterLink
+                    className="transition duration-500 hover:text-primary-300"
+                    to="/auth"
+                  >
+                    Sign In
+                  </RouterLink>
                   <ActionButton setSelectedPage={setSelectedPage}>
                     Become a Member
                   </ActionButton>

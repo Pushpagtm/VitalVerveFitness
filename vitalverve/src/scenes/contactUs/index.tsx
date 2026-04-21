@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { SelectedPage } from "@/shared/types";
 import { motion } from "framer-motion";
 import ContactUsPageGraphic from "@/assets/ContactUsPageGraphic.png";
@@ -12,16 +13,40 @@ const ContactUs = ({ setSelectedPage }: Props) => {
   const inputStyles = `mb-5 w-full rounded-lg bg-primary-300
   px-5 py-3 placeholder-white`;
 
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitError, setSubmitError] = useState(false);
+
   const {
     register,
-    trigger,
+    handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ name: string; email: string; message: string }>();
 
-  const onSubmit = async (e: any) => {
-    const isValid = await trigger();
-    if (!isValid) {
-      e.preventDefault();
+  const onSubmit = async (values: { name: string; email: string; message: string }) => {
+    setSubmitMessage("");
+    setSubmitError(false);
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/abc@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send.");
+      }
+
+      reset();
+      setSubmitMessage("Sent successfully!");
+      setTimeout(() => setSubmitMessage(""), 2500);
+    } catch {
+      setSubmitError(true);
+      setSubmitMessage("Unable to send right now. Please try again.");
     }
   };
 
@@ -66,10 +91,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
             }}
           >
             <form
-              target="_blank"
-              onSubmit={onSubmit}
-              action="https://formsubmit.co/abc@gmail.com"
-              method="POST"
+              onSubmit={handleSubmit(onSubmit)}
             >
               <input
                 className={inputStyles}
@@ -131,6 +153,15 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                 SUBMIT
               </button>
             </form>
+            {submitMessage && (
+              <p
+                className={`mt-4 w-fit rounded-md px-4 py-2 text-sm ${
+                  submitError ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                }`}
+              >
+                {submitMessage}
+              </p>
+            )}
           </motion.div>
 
           <motion.div
