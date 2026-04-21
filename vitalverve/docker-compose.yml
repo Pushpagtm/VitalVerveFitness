@@ -1,4 +1,18 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vitalverve
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vitalverve"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   vitalverve-dev:
     build:
       context: .
@@ -21,3 +35,17 @@ services:
     command: npm run server
     ports:
       - "4000:4000"
+    environment:
+      - API_PORT=4000
+      - JWT_SECRET=${JWT_SECRET:-replace_with_a_long_random_secret}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-vitalverve}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

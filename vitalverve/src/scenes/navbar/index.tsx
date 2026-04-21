@@ -18,6 +18,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
   const [isMenuToggled, setIsMenuToggled] = useState<boolean>(false);
   const isAboveMediumScreens = useMediaQuery("(min-width: 1060px)");
   const navbarBackground = isTopOfPage ? "" : "bg-primary-100 drop-shadow";
+  const isLoggedIn = Boolean(localStorage.getItem("auth_token"));
 
   return (
     <nav>
@@ -55,6 +56,14 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage }: Props) => {
                   />
                 </div>
                 <div className={`${flexBetween} gap-8`}>
+                  {isLoggedIn && (
+                    <RouterLink
+                      className="transition duration-500 hover:text-primary-300"
+                      to="/dashboard"
+                    >
+                      Dashboard
+                    </RouterLink>
+                  )}
                   <RouterLink
                     className="transition duration-500 hover:text-primary-300"
                     to="/auth"

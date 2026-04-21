@@ -36,7 +36,18 @@ From the `vitalverve` folder:
 docker compose up --build
 ```
 
-App runs at `http://localhost:5173`.
+This starts:
+
+- Frontend: `http://localhost:5173`
+- Auth API: `http://localhost:4000`
+- PostgreSQL: `localhost:5432` (db: `vitalverve`)
+
+If you need a clean restart:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
 
 ### Production build and run
 
@@ -60,7 +71,7 @@ This project now includes:
 
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
-- SQLite database at `server/data/app.db`
+- PostgreSQL database (configure with `.env`)
 
 ### Run frontend + backend together
 
@@ -80,3 +91,11 @@ Copy `.env.example` to `.env` inside `vitalverve` and update values:
 ```bash
 cp vitalverve/.env.example vitalverve/.env
 ```
+
+Set these PostgreSQL variables in `.env`:
+
+- `POSTGRES_HOST`
+- `POSTGRES_PORT`
+- `POSTGRES_USER`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_DB`

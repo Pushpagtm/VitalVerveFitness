@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 type AuthMode = "login" | "signup";
 
-const Auth = () => {
+type Props = {
+  isModal?: boolean;
+  onLoginSuccess?: () => void;
+};
+
+const Auth = ({ isModal = false, onLoginSuccess }: Props) => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<AuthMode>("login");
   const [name, setName] = useState("");
@@ -52,6 +57,10 @@ const Auth = () => {
       }
 
       localStorage.setItem("auth_token", data.token);
+      localStorage.setItem(
+        "auth_user",
+        JSON.stringify({ name: data.user.name, email: data.user.email })
+      );
       setMessage(
         `${mode === "signup" ? "Signup" : "Login"} successful. Welcome ${data.user.name}!`
       );
@@ -61,7 +70,11 @@ const Auth = () => {
 
       if (mode === "login") {
         setTimeout(() => {
-          navigate("/");
+          if (onLoginSuccess) {
+            onLoginSuccess();
+            return;
+          }
+          navigate("/dashboard");
         }, 600);
       }
     } catch (error) {
@@ -73,7 +86,10 @@ const Auth = () => {
   };
 
   return (
-    <section id="auth" className="w-full bg-primary-100 py-20">
+    <section
+      id="auth"
+      className={isModal ? "w-full" : "w-full bg-primary-100 py-20"}
+    >
       <div className="mx-auto w-5/6 max-w-[480px] rounded-2xl bg-white px-8 py-10 shadow-lg">
         <h2 className="mb-2 text-3xl font-bold text-primary-500">
           {mode === "signup" ? "Create Account" : "Welcome Back"}
