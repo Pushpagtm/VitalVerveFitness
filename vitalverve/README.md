@@ -99,3 +99,27 @@ Set these PostgreSQL variables in `.env`:
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
 - `POSTGRES_DB`
+
+## Deploying (Vercel + Separate API)
+
+Use a split deployment:
+
+- Frontend (Vite) on Vercel
+- Backend API (`server/index.js`) on Render/Railway/Fly/EC2
+- PostgreSQL on Neon/Supabase/Render
+
+### Frontend env (Vercel)
+
+- `VITE_API_BASE_URL=https://your-api-domain.com`
+
+### Backend env
+
+- `CORS_ORIGIN=https://your-vercel-domain.vercel.app,https://your-custom-domain.com`
+- `JWT_SECRET=...`
+- `POSTGRES_HOST=...`
+- `POSTGRES_PORT=5432`
+- `POSTGRES_USER=...`
+- `POSTGRES_PASSWORD=...`
+- `POSTGRES_DB=...`
+
+Use `vitalverve/.env.production.example` as a template.

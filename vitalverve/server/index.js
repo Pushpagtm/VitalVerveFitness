@@ -10,6 +10,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.API_PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
+const allowedOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 const classes = [
   "Weight Training Classes",
   "Yoga Classes",
@@ -19,7 +23,17 @@ const classes = [
   "Training Classes",
 ];
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("CORS origin not allowed"));
+    },
+  })
+);
 app.use(express.json());
 
 const requireAuth = (req, res, next) => {

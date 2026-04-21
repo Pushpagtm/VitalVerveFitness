@@ -9,6 +9,7 @@ type Props = {
 };
 
 const Auth = ({ isModal = false, onLoginSuccess }: Props) => {
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "";
   const navigate = useNavigate();
   const [mode, setMode] = useState<AuthMode>("login");
   const [name, setName] = useState("");
@@ -41,7 +42,7 @@ const Auth = ({ isModal = false, onLoginSuccess }: Props) => {
       const payload =
         mode === "signup" ? { name, email, password } : { email, password };
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${apiBaseUrl}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
